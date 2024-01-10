@@ -10,7 +10,7 @@ const createOne = (Model: any) =>
     res.status(201).json({
       status: "success",
       data: {
-        data: doc,
+        ...doc,
       },
     });
   });

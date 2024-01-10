@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post("/signup", userValidationRules(), validate, authController.signup);
 router.post("/login", authController.login);
+router.get("/:id", );
 
 
 //Declare router as a userRouter
