@@ -64,20 +64,21 @@ const getAll = (Model: any) =>
     });
   });
 
-  const getOne = (Model: any) =>
+  const getOne = (Model: any, excludedfield: Array<String>) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc: object = await Model.findOne({
       where: {
         id: req.params.id,
+      },
+      attributes: {
+        exclude: excludedfield
       },
     });
 
     // send responce
     res.status(200).json({
       status: "success",
-      data: {
-        data: doc,
-      },
+      data: doc
     });
   
   })

@@ -5,15 +5,18 @@ import { promisify } from "util";
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 
-
 type userDetails = {
   id: number;
-  name: string,
+  name: string;
   password: string;
   passwordResetExpires: any;
   passwordResetToken: any;
 };
 
+const getMe = (req: any, res: Response, next: NextFunction) => {
+  req.params.id = req.user.id;
+  next();
+};
 
 const signToken = (id: number) =>
   jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -36,13 +39,14 @@ const createSendToken = (
   res.status(statusCode).json({
     status: "success",
     token,
+    user
   });
 };
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, address, username, password } = req.body;
-    
+
     const hasedPassword = await bcrypt.hash(password, 12);
 
     const body = {
@@ -50,7 +54,7 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
       email,
       address,
       username,
-      password: hasedPassword
+      password: hasedPassword,
     };
     // create user
     const newUser = await Users.create(body);
@@ -72,18 +76,19 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     // check if user exist && password is correct
-    const user: any = await Users.findOne({ email });
+    const user: any = await Users.findOne({ where: {
+      email
+    } });
 
     if (!user) {
       return next(new AppError("Incorrect email or password", 403));
     }
 
-     // check password
-     const checkPassword = await bcrypt.compare(password, user?.password);
-     if (!checkPassword) {
-       return next(new AppError("Incorrect email or password", 403));
-     }
- 
+    // check password
+    const checkPassword = await bcrypt.compare(password, user?.password);
+    if (!checkPassword) {
+      return next(new AppError("Incorrect email or password", 403));
+    }
 
     // if everything ok, send token to client
     createSendToken(user, 201, req, res);
@@ -92,7 +97,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-exports.protect = async (req: any, res: Response, next: NextFunction) => {
+const protect = async (req: any, res: Response, next: NextFunction) => {
   try {
     // Getting token and check of it's there
     let token: string;
@@ -115,12 +120,16 @@ exports.protect = async (req: any, res: Response, next: NextFunction) => {
       process.env.JWT_SECRET
     );
     // Check if user still exists
-    const currentUser = await Users.findById(decoded.id);
+    const currentUser = await Users.findOne({
+      where: {
+        id: decoded.id,
+      },
+    });
 
     if (!currentUser) {
       return next(
         new AppError(
-          "The user belonging to this token does n longer exist",
+          "The user belonging to this token does not longer exist",
           401
         )
       );
@@ -140,7 +149,9 @@ exports.protect = async (req: any, res: Response, next: NextFunction) => {
 
 const authController = {
   login,
-  signup
-}
+  signup,
+  protect,
+  getMe
+};
 
-export = authController
+export = authController;
