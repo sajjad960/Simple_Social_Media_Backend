@@ -25,6 +25,8 @@ const createPost = catchAsync(async (req: any, res: Response) => {
 
   res.status(201).json({ success: true, message: "Post created successfully" });
 });
+
+const getAllPosts = factory.getAll(Post)
 // Export
-const postController = { createPost };
+const postController = { createPost, getAllPosts };
 export = postController;
