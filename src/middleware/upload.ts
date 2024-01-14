@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req,file,cb) => {
-    if (file.fieldname === "image") {
+    if (file.fieldname === "images") {
         (file.mimetype === 'image/jpeg' 
          || file.mimetype === 'image/png')
         ? cb(null,true)
@@ -36,6 +36,6 @@ const fileFilter = (req,file,cb) => {
 const upload = multer({
     storage:storage,
     fileFilter:fileFilter
-}).fields([{ name: 'document', maxCount: 1 }, { name: 'image', maxCount: 2 }]);
+}).fields([{ name: 'document', maxCount: 1 }, { name: 'images', maxCount: 2 }]);
 
 export = upload

@@ -10,9 +10,9 @@ interface imageObj {}
 
 const createPost = catchAsync(async (req: any, res: Response) => {
   const { text } = req.body;
-  const images = req.files.image;
+  const images = req?.files?.images;
   const imagesName = [];
-  const userId = req.user.id
+  const userId = req?.user?.id
 
   images?.map((e: any, i: number) => {
     imagesName.push(e?.filename);
@@ -25,7 +25,7 @@ const createPost = catchAsync(async (req: any, res: Response) => {
     user_id: userId
   });
 
-  res.status(201).json({ success: true, message: "Post created successfully" });
+  res.status(201).json({ success: true, message: "Post created successfully", post });
 });
 
 const getAllPosts = factory.getAll(Post)
