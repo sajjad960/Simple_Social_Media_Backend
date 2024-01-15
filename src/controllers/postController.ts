@@ -28,6 +28,8 @@ const createPost = catchAsync(async (req: any, res: Response) => {
   res.status(201).json({ success: true, message: "Post created successfully", post });
 });
 
+// const getUploadImages = 
+
 const getAllPosts = factory.getAll(Post)
 // Export
 const postController = { createPost, getAllPosts };

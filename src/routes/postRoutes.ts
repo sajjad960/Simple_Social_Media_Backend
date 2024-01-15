@@ -9,6 +9,8 @@ router.use(authController.protect)
 router.route("/").post(upload, postController.createPost).get(postController.getAllPosts);
 
 
+router.route("/uploads").get()
+
 //Declare router as a userRouter
 const postRouter = router;
 

@@ -1,15 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
 const app = express();
 import bodyParser from 'body-parser';
+import path from "path";
 
 
 //Security packages
 import cors from "cors";
 
-//For Routers Import
-import blogUser from "./routes/userRoutes";
-
-//For Error Import
 import AppError from "./utils/AppError";
 import globalErrorHandler from "./controllers/errorController";
 import userRouter from "./routes/userRoutes";
@@ -31,6 +28,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   console.log("hello from middleware");
   next();
 });
+
+app.use("/uploads/:username", express.static(path.join(__dirname, './files/image')));
+
 
 //Routes
 const prefix = "/api/v1";
