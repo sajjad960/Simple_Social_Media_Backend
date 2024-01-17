@@ -29,7 +29,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use("/uploads/:username", express.static(path.join(__dirname, './files/image')));
+// app.use("/uploads/:username", express.static(path.join(__dirname, './files/image')));
 
 
 //Routes

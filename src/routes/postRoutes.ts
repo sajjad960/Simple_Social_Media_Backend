@@ -9,7 +9,7 @@ router.use(authController.protect)
 router.route("/").post(upload, postController.createPost).get(postController.getAllPosts);
 
 
-router.route("/uploads").get()
+router.route("/uploads/:imagename").get(postController.getUploadImages)
 
 //Declare router as a userRouter
 const postRouter = router;

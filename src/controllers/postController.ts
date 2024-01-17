@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import factory from "./handleFactory";
 import catchAsync from "../utils/catchAsync";
 import Post from "../models/postModel";
+import path from "path";
 
 // const createUser = factory.createOne(Users);
 // const getUsers = factory.getAll(Users);
@@ -28,9 +29,21 @@ const createPost = catchAsync(async (req: any, res: Response) => {
   res.status(201).json({ success: true, message: "Post created successfully", post });
 });
 
-// const getUploadImages = 
+const getUploadImages = catchAsync(async (req: any, res: Response) => {
+  const userid = req.user.id;
+  const imagename = req.params.imagename
+  const filePath = path.join(__dirname, '../files/image', String(userid), imagename);
+
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error('Error sending file:', err);
+      res.status(404).send('File not found');
+    }
+  });
+
+})
 
 const getAllPosts = factory.getAll(Post)
 // Export
-const postController = { createPost, getAllPosts };
+const postController = { createPost, getAllPosts, getUploadImages };
 export = postController;
