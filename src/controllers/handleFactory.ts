@@ -57,9 +57,7 @@ const getAll = (Model: any) =>
     res.status(200).json({
       status: "success",
       results: rows?.length,
-      data: {
-        data: rows,
-      },
+      data: rows,
       total: count,
     });
   });
