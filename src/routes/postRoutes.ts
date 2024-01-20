@@ -5,11 +5,13 @@ import authController from "../controllers/authController";
 
 const router = express.Router();
 
-router.use(authController.protect)
+router.route("/uploads/:id/:imagename").get(postController.getUploadImages);
 
-router.route("/").post(upload, postController.createPost).get(postController.getAllPosts);
-
-router.route("/uploads/:imagename").get(postController.getUploadImages)
+router.use(authController.protect);
+router
+  .route("/")
+  .post(upload, postController.createPost)
+  .get(postController.getAllPosts);
 
 //Declare router as a userRouter
 const postRouter = router;

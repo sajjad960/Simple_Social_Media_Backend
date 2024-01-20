@@ -30,7 +30,7 @@ const createPost = catchAsync(async (req: any, res: Response) => {
 });
 
 const getUploadImages = catchAsync(async (req: any, res: Response) => {
-  const userid = req.user.id;
+  const userid = req.params.id;
   const imagename = req.params.imagename
   const filePath = path.join(__dirname, '../files/image', String(userid), imagename);
 
