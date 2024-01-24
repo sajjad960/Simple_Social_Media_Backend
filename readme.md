@@ -42,4 +42,4 @@ npm run dev
 
 Local address of the app will be `http://127.0.0.1:5005` , if you used my env port.
 
-<Note: Api documentation will updated soon>
+__Note: Api documentation will updated soon__
