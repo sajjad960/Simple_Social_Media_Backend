@@ -16,8 +16,7 @@ const createPost = catchAsync(async (req: any, res: Response) => {
   const imagesNames = [];
   const userId = req?.user?.id;
 
-  console.log(images);
-
+  // create files into directory
   await Promise.all(images?.map(async (e: any, i: number) => {
     const destinationPath = path.join(
       __dirname,
@@ -41,14 +40,9 @@ const createPost = catchAsync(async (req: any, res: Response) => {
     const filePath = path.join(destinationPath, newFileName);
     await fs.writeFile(filePath, e.buffer);
 
-    console.log(filePath);
-
     imagesNames.push(newFileName);
-    console.log("read execute into");
-
   }));
   
-  console.log("read execute after");
   // Create the post
   const post = await Post.create({
     text,
