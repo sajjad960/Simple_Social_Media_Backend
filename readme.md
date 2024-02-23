@@ -5,6 +5,7 @@ Simple Social Media Backend
 - I am creating this app for learning purposes;
 
   - basically, you can create posts with multiple images and text, and also comment, react, and reply to your posts .
+  - Image Restriction Also Available Depends On Image Content.
   - Other users also able view,react,comment and reply to your posts.
 
 ### Technology used
@@ -43,4 +44,4 @@ npm run dev
 
 Local address of the app will be `http://127.0.0.1:6006` , if you used my env port.
 
-__Note: Api documentation will updated soon__
+**Note: Api documentation will updated soon**
