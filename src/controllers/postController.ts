@@ -19,6 +19,7 @@ async function detectObjects(imageBuffer) {
     const model = await load();
     const image = node.decodeImage(imageBuffer);
     const predictions = await model.detect(image);
+    console.log(predictions);
 
     return predictions;
   } catch (error) {

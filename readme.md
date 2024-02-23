@@ -13,6 +13,7 @@ Simple Social Media Backend
 - 11.1.2-MariaDB Arch Linux, If you have mySql server installed, you are ok.
 - ORM-Sequlizer
 - Typescript
+- TensorFlow/coco-ssd
 
 ### Installation and Run
 
