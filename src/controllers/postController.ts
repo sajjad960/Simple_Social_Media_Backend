@@ -13,12 +13,6 @@ import Jimp from "jimp";
 
 interface imageObj {}
 
-// Load COCO-SSD model
-// let model: any;
-// async function loadModel() {
-// }
-// loadModel();
-
 // Function to run object detection on the image
 async function detectObjects(imageBuffer) {
   try {
@@ -28,7 +22,36 @@ async function detectObjects(imageBuffer) {
 
     return predictions;
   } catch (error) {
-    console.log(error);
+    console.log("getting prediction error", error);
+  }
+}
+
+async function precessImages(images, postId) {
+  try {
+    await Promise.all(
+      images?.map(async (image) => {
+        const predictions = await detectObjects(image.buffer);
+        const isPredictionCat = predictions?.find((prediction) => {
+          return prediction?.class === "cat";
+        });
+
+        // update created post
+        if (isPredictionCat) {
+          const restrictedPost = await Post.update(
+            {
+              restricted: 1,
+            },
+            {
+              where: {
+                id: postId,
+              },
+            }
+          );
+        }
+      })
+    );
+  } catch (error) {
+    console.log("image Process Fail", error);
   }
 }
 
@@ -39,56 +62,53 @@ const createPost = catchAsync(async (req: any, res: Response) => {
   const userId = req?.user?.id;
 
   // create files into directory
-  await Promise.all(
-    images?.map(async (e: any, i: number) => {
-      const destinationPath = path.join(
-        __dirname,
-        "../files/image",
-        String(userId)
-      );
+  if (images?.length > 0) {
+    await Promise.all(
+      images?.map(async (image: any, i: number) => {
+        const destinationPath = path.join(
+          __dirname,
+          "../files/image",
+          String(userId)
+        );
 
-      try {
-        // Check if the folder already exists
-        await fs.access(destinationPath);
-      } catch (error) {
-        // If the folder doesn't exist, create it
         try {
-          await fs.mkdir(destinationPath, { recursive: true });
-        } catch (err) {
-          console.error("Error creating folder:", err);
+          // Check if the folder already exists
+          await fs.access(destinationPath);
+        } catch (error) {
+          // If the folder doesn't exist, create it
+          try {
+            await fs.mkdir(destinationPath, { recursive: true });
+          } catch (err) {
+            console.error("Error creating folder:", err);
+          }
         }
-      }
-      console.log("hello");
+        // const newbuffer = await Jimp.read(e.buffer)
+        //   .then((image) => {
+        //     // Resize the image
+        //     return image.resize(320, 192);
+        //   })
+        //   .then((resizedImage) => {
+        //     // Get the resized image as a buffer
+        //     return resizedImage.getBufferAsync("image/jpeg");
+        //   })
+        //   .then((buffer) => {
+        //     return buffer;
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //     res.status(500).send("Error resizing image.");
+        //   });
 
-      // const newbuffer = await Jimp.read(e.buffer)
-      //   .then((image) => {
-      //     // Resize the image
-      //     return image.resize(320, 192);
-      //   })
-      //   .then((resizedImage) => {
-      //     // Get the resized image as a buffer
-      //     return resizedImage.getBufferAsync("image/jpeg");
-      //   })
-      //   .then((buffer) => {
-      //     return buffer;
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     res.status(500).send("Error resizing image.");
-      //   });
+        // const predictions = await detectObjects(e.buffer);
 
-      // const predictions = await detectObjects(newbuffer);
+        const newFileName = Date.now() + "-" + image.originalname;
+        const filePath = path.join(destinationPath, newFileName);
+        await fs.writeFile(filePath, image.buffer);
 
-      // console.log("production", predictions);
-
-      const newFileName = Date.now() + "-" + e.originalname;
-      const filePath = path.join(destinationPath, newFileName);
-      await fs.writeFile(filePath, e.buffer);
-
-      imagesNames.push(newFileName);
-    })
-  );
-
+        imagesNames.push(newFileName);
+      })
+    );
+  }
   // Create the post
   const post = await Post.create({
     text,
@@ -99,6 +119,9 @@ const createPost = catchAsync(async (req: any, res: Response) => {
   res
     .status(201)
     .json({ success: true, message: "Post created successfully", post });
+
+  // Run Image Processing And Check If There Any Cat Available
+  images?.length > 0 && precessImages(images, post.id);
 });
 
 const getUploadImages = catchAsync(async (req: any, res: Response) => {
