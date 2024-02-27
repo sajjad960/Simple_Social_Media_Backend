@@ -9,7 +9,7 @@ router.route("/uploads/:id/:imagename").get(postController.getUploadImages);
 
 router.use(authController.protect);
 router
-  .route("/")
+  .route("/") 
   .post(upload, postController.createPost)
   .get(postController.getAllPosts);
 

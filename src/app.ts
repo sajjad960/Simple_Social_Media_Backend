@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 const app = express();
 import bodyParser from 'body-parser';
-import path from "path";
 
 
 //Security packages
@@ -11,6 +10,7 @@ import AppError from "./utils/AppError";
 import globalErrorHandler from "./controllers/errorController";
 import userRouter from "./routes/userRoutes";
 import postRouter from "./routes/postRoutes";
+import commentRouter from "./routes/commentRoutes";
 
 // cors security
 app.use(
@@ -37,6 +37,7 @@ const prefix = "/api/v1";
 
 app.use(`${prefix}/users`, userRouter);
 app.use(`${prefix}/posts`, postRouter);
+app.use(`${prefix}/comments`, commentRouter);
 
 //If app not found any api route
 app.all("*", (req, res, next) => {

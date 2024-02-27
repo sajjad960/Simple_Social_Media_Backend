@@ -15,12 +15,12 @@ const Commment = sequelize.define(
       allowNull: true,
     },
     text: {
-      type: DataTypes.STRING(45),
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
     replies: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+      type: DataTypes.STRING(255),
+      allowNull: true,  
     },
     created_at: {
       type: DataTypes.DATE,
