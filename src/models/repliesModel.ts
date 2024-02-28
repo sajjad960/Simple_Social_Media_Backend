@@ -14,8 +14,12 @@ const Replies = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     text: {
-      type: DataTypes.STRING(45),
+      type: DataTypes.STRING(255),
       allowNull: true,
     },
     created_at: {

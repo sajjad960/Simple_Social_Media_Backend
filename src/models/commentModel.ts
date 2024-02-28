@@ -19,8 +19,9 @@ const Commment = sequelize.define(
       allowNull: true,
     },
     replies: {
-      type: DataTypes.STRING(255),
-      allowNull: true,  
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
     },
     created_at: {
       type: DataTypes.DATE,
