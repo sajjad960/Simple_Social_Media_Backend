@@ -1,5 +1,8 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../instances/sequelize";
+import Post from "./postModel";
+import Commment from "./commentModel";
+import Replies from "./repliesModel";
 
 const Counter = sequelize.define(
   "counters",
@@ -15,6 +18,10 @@ const Counter = sequelize.define(
       allowNull: true,
     },
     post_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    reply_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
@@ -56,9 +63,20 @@ const Counter = sequelize.define(
     type: {
       type: DataTypes.STRING,
       allowNull: true,
+      validate: {
+        isIn: [["post", "comment", "reply"]],
+      },
     },
   },
   { timestamps: false }
 );
+
+Counter.belongsTo(Post, {foreignKey: "post_id", as: "post"})
+Post.hasOne(Counter, {foreignKey: "post_id", as: "counter"})
+Counter.belongsTo(Commment, {foreignKey: "comment_id", as: "comment"})
+Commment.hasOne(Counter, {foreignKey: "comment_id", as: "comment"})
+Counter.belongsTo(Replies, {foreignKey: "reply_id", as: "reply"})
+Replies.hasOne(Counter, {foreignKey: "reply_id", as: "reply"})
+
 
 export = Counter;

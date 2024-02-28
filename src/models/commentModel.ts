@@ -18,7 +18,7 @@ const Commment = sequelize.define(
       type: DataTypes.STRING(255),
       allowNull: true,
     },
-    replies: {
+    replies_count: {
       type: DataTypes.INTEGER,
       allowNull: true,
       defaultValue: 0,

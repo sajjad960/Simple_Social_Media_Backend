@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 const app = express();
-import bodyParser from 'body-parser';
-
+import bodyParser from "body-parser";
 
 //Security packages
 import cors from "cors";
@@ -11,6 +10,7 @@ import globalErrorHandler from "./controllers/errorController";
 import userRouter from "./routes/userRoutes";
 import postRouter from "./routes/postRoutes";
 import commentRouter from "./routes/commentRoutes";
+import replyRouter from "./routes/replyRoutes";
 
 // cors security
 app.use(
@@ -21,7 +21,7 @@ app.use(
 // Parse Body
 // app.use(express.json({ limit: "10kb" }));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended:true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //Test Middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -31,13 +31,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // app.use("/uploads/:username", express.static(path.join(__dirname, './files/image')));
 
-
 //Routes
 const prefix = "/api/v1";
 
 app.use(`${prefix}/users`, userRouter);
 app.use(`${prefix}/posts`, postRouter);
 app.use(`${prefix}/comments`, commentRouter);
+app.use(`${prefix}/reply`, replyRouter);
 
 //If app not found any api route
 app.all("*", (req, res, next) => {
