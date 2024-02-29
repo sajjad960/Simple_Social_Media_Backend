@@ -11,6 +11,7 @@ import userRouter from "./routes/userRoutes";
 import postRouter from "./routes/postRoutes";
 import commentRouter from "./routes/commentRoutes";
 import replyRouter from "./routes/replyRoutes";
+import counterRouter from "./routes/counterRoutes";
 
 // cors security
 app.use(
@@ -38,6 +39,7 @@ app.use(`${prefix}/users`, userRouter);
 app.use(`${prefix}/posts`, postRouter);
 app.use(`${prefix}/comments`, commentRouter);
 app.use(`${prefix}/reply`, replyRouter);
+app.use(`${prefix}/counter`, counterRouter);
 
 //If app not found any api route
 app.all("*", (req, res, next) => {

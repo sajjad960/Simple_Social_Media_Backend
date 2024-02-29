@@ -73,8 +73,10 @@ const Counter = sequelize.define(
 
 Counter.belongsTo(Post, {foreignKey: "post_id", as: "post"})
 Post.hasOne(Counter, {foreignKey: "post_id", as: "counter"})
+
 Counter.belongsTo(Commment, {foreignKey: "comment_id", as: "comment"})
 Commment.hasOne(Counter, {foreignKey: "comment_id", as: "comment"})
+
 Counter.belongsTo(Replies, {foreignKey: "reply_id", as: "reply"})
 Replies.hasOne(Counter, {foreignKey: "reply_id", as: "reply"})
 
