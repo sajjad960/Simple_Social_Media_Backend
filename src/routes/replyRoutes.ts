@@ -5,7 +5,7 @@ import replyController from "../controllers/repliesController";
 const router = express.Router();
 
 router.use(authController.protect);
-// router.route("/:id").get(commentController.getAllComments);
+router.route("/:id").get(replyController.getAllReplies);
 router
   .route("/")
   .post(replyController.createReply)

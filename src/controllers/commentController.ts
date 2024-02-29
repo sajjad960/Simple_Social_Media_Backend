@@ -11,7 +11,7 @@ const createComment = catchAsync(
     const { post_id, text } = req.body;
 
     // Check If PostId Valid.
-    const isPostExist = Post.findOne({
+    const isPostExist = await Post.findOne({
       where: {
         id: post_id,
       },
@@ -41,7 +41,7 @@ const getAllComments = catchAsync(
     req.query.post_id = post_id;
 
     // Check If PostId Valid.
-    const isPostExist = Post.findOne({
+    const isPostExist = await Post.findOne({
       where: {
         id: post_id,
       },

@@ -3,6 +3,8 @@ import catchAsync from "../utils/catchAsync";
 import { sequelize } from "../instances/sequelize";
 import Replies from "../models/repliesModel";
 import Commment from "../models/commentModel";
+import AppError from "../utils/AppError";
+import factory from "./handleFactory";
 
 const createReply = catchAsync(
   async (req: any, res: Response, next: NextFunction) => {
@@ -30,8 +32,30 @@ const createReply = catchAsync(
   }
 );
 
+const getAllReplies = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const comment_id = req.params.id;
+
+    // add filter
+    req.query.comment_id = comment_id;
+
+    // Check If PostId Valid.
+    const isPostExist = await Commment.findOne({
+      where: {
+        id: comment_id,
+      },
+    });
+    if (!isPostExist) {
+      return next(new AppError("Comment Not Found", 404));
+    }
+
+    factory.getAll(Replies)(req, res, next);
+  }
+);
+
 const replyController = {
   createReply,
+  getAllReplies,
 };
 
 export = replyController;
