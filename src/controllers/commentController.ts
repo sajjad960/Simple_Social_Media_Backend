@@ -39,6 +39,7 @@ const getAllComments = catchAsync(
 
     // add filter
     req.query.post_id = post_id;
+    req.query.limit = "3";
 
     // Check If PostId Valid.
     const isPostExist = await Post.findOne({

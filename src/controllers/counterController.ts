@@ -5,15 +5,13 @@ import Replies from "../models/repliesModel";
 import AppError from "../utils/AppError";
 import Post from "../models/postModel";
 import Commment from "../models/commentModel";
-import { sequelize } from "../instances/sequelize";
 
 const newReact = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { reactName, type, id } = req.body;
-    // type === "post" && Post || type === "comment" && Commment || type === "reply" && Replies
 
     async function createOrIncrementReact(type, idTypeName, id) {
-      // Check Id Is Still Valid
+      // Check Id, Is It Still Valid
       const model =
         (type === "post" && Post) ||
         (type === "comment" && Commment) ||
