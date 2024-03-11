@@ -10,6 +10,12 @@ const newReact = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { reactName, type, id } = req.body;
 
+    // Validate Type
+    const validType = ["post", "comment", "reply"];
+    if (!validType.includes(type)) {
+      return next(new AppError("Bad Request", 400));
+    }
+
     async function createOrIncrementReact(type, idTypeName, id) {
       // Check Id, Is It Still Valid
       const model =
@@ -24,7 +30,12 @@ const newReact = catchAsync(
       });
 
       if (!isIdValid) {
-        return next(new AppError(`${type.charAt(0).toUpperCase() + type.slice(1)} not found`, 404));
+        return next(
+          new AppError(
+            `${type.charAt(0).toUpperCase() + type.slice(1)} not found`,
+            404
+          )
+        );
       }
 
       // Check If React Already Created For The Type Or Not.

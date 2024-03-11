@@ -71,14 +71,14 @@ const Counter = sequelize.define(
   { timestamps: false }
 );
 
-Counter.belongsTo(Post, {foreignKey: "post_id", as: "post"})
-Post.hasOne(Counter, {foreignKey: "post_id", as: "counter"})
+Counter.belongsTo(Post, {foreignKey: "post_id", as: "postReactions"})
+Post.hasOne(Counter, {foreignKey: "post_id", as: "postReactions"})
 
-Counter.belongsTo(Commment, {foreignKey: "comment_id", as: "comment"})
-Commment.hasOne(Counter, {foreignKey: "comment_id", as: "comment"})
+Counter.belongsTo(Commment, {foreignKey: "comment_id", as: "commentReactions"})
+Commment.hasOne(Counter, {foreignKey: "comment_id", as: "commentReactions"})
 
-Counter.belongsTo(Replies, {foreignKey: "reply_id", as: "reply"})
-Replies.hasOne(Counter, {foreignKey: "reply_id", as: "reply"})
+Counter.belongsTo(Replies, {foreignKey: "reply_id", as: "replyReactions"})
+Replies.hasOne(Counter, {foreignKey: "reply_id", as: "replyReactions"})
 
 
 export = Counter;

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import AppError from "../utils/AppError";
 import catchAsync from "../utils/catchAsync";
+import Counter from "../models/counterModel";
 
 const createOne = (Model: any) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +23,7 @@ const getAll = (Model: any) =>
     // Api Features
     function filter() {
       const queryObj = { ...req.query };
-      const excludedFields = ["page", "sort", "limit", "fields"];
+      const excludedFields = ["page", "sort", "limit", "fields", "include"];
       excludedFields.forEach((el) => delete queryObj[el]);
       query.where = queryObj;
     }
@@ -43,11 +44,38 @@ const getAll = (Model: any) =>
       query.offset = offset;
     }
 
+    function relationsData() {
+      const includeArray: any[] = [];
+
+      if (req.query.include) {
+        const includedModels = String(req.query.include).split(",");
+
+        includedModels.forEach((associationName: string) => {
+          
+          const model =
+            (associationName === "postReactions" && Counter) ||
+            (associationName === "commentReactions" && Counter) ||
+            (associationName === "replyReactions" && Counter);
+
+          includeArray.push({
+            model: model,
+            as: associationName,
+          });
+        });
+
+        if (includeArray.length > 0) {
+          query.include = includeArray;
+        }
+        console.log("query", query);
+      }
+    }
+
     // Call Api Features
     filter();
     limitedField();
     sort();
     paginate();
+    relationsData();
 
     console.log(query);
     const { count, rows } = await Model.findAndCountAll(query);
@@ -61,28 +89,27 @@ const getAll = (Model: any) =>
     });
   });
 
-  const getOne = (Model: any, excludedfield: Array<String>) =>
+const getOne = (Model: any, excludedfield: Array<String>) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const doc: object = await Model.findOne({
       where: {
         id: req.params.id,
       },
       attributes: {
-        exclude: excludedfield
+        exclude: excludedfield,
       },
     });
 
     // send responce
     res.status(200).json({
       status: "success",
-      data: doc
+      data: doc,
     });
-  
-  })
+  });
 
 const factory = {
   createOne,
   getAll,
-  getOne
+  getOne,
 };
 export = factory;
