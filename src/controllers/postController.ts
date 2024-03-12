@@ -143,7 +143,14 @@ const getUploadImages = catchAsync(async (req: any, res: Response) => {
   });
 });
 
-const getAllPosts = factory.getAll(Post);
+const getAllPosts = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // get associate data
+    req.query.include="postReactions"
+
+    factory.getAll(Post)(req, res, next);
+  }
+);;
 // Export
 const postController = { createPost, getAllPosts, getUploadImages };
 export = postController;

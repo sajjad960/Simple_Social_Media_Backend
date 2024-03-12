@@ -38,6 +38,8 @@ const getAllReplies = catchAsync(
 
     // add filter
     req.query.comment_id = comment_id;
+    // get associate data
+    req.query.include = "replyReactions";
 
     // Check If PostId Valid.
     const isPostExist = await Commment.findOne({
