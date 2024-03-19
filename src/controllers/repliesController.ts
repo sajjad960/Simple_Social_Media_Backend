@@ -38,6 +38,7 @@ const getAllReplies = catchAsync(
 
     // add filter
     req.query.comment_id = comment_id;
+    req.query.limit = "2"
     // get associate data
     req.query.include = "replyReactions";
 

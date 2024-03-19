@@ -147,6 +147,7 @@ const getAllPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // get associate data
     req.query.include="postReactions"
+    req.query.limit = "9"
 
     factory.getAll(Post)(req, res, next);
   }

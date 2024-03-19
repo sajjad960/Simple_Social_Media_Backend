@@ -9,7 +9,6 @@ import Commment from "../models/commentModel";
 const newReact = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { reactName, type, id } = req.body;
-
     // Validate Type
     const validType = ["post", "comment", "reply"];
     if (!validType.includes(type)) {
@@ -45,12 +44,13 @@ const newReact = catchAsync(
         },
       });
 
+      let newData;
       if (isReactExist) {
-        const incrementedCounter = await Counter.increment(reactName, {
+        newData = await Counter.increment(reactName, {
           where: { [idTypeName]: id, type },
         });
       } else {
-        const newCounterEntry = await Counter.create({
+        newData = await Counter.create({
           type,
           [idTypeName]: id,
           [reactName]: 1,
@@ -60,6 +60,7 @@ const newReact = catchAsync(
       res.status(200).json({
         status: "success",
         message: "Reaction Added",
+        reaction: newData
       });
     }
 
