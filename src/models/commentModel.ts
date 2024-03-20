@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../instances/sequelize";
+import User from "./userModel";
 
 const Commment = sequelize.define(
   "comments",
@@ -11,6 +12,10 @@ const Commment = sequelize.define(
       primaryKey: true,
     },
     post_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
@@ -36,5 +41,8 @@ const Commment = sequelize.define(
   },
   { timestamps: false }
 );
+
+Commment.belongsTo(User, {foreignKey: "user_id", as: "userDetails"})
+User.hasOne(Commment, {foreignKey: "user_id", as: "userDetails"})
 
 export = Commment;

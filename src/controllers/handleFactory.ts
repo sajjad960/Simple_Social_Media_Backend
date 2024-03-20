@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import AppError from "../utils/AppError";
 import catchAsync from "../utils/catchAsync";
 import Counter from "../models/counterModel";
+import User from "../models/userModel";
 
 const createOne = (Model: any) =>
   catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -51,16 +52,18 @@ const getAll = (Model: any) =>
         const includedModels = String(req.query.include).split(",");
 
         includedModels.forEach((associationName: string) => {
-          
-          const model =
-            (associationName === "postReactions" && Counter) ||
-            (associationName === "commentReactions" && Counter) ||
-            (associationName === "replyReactions" && Counter);
+          if (associationName) {
+            const model =
+              (associationName === "postReactions" && Counter) ||
+              (associationName === "commentReactions" && Counter) ||
+              (associationName === "replyReactions" && Counter) ||
+              (associationName === "userDetails" && User);
 
-          includeArray.push({
-            model: model,
-            as: associationName,
-          });
+            includeArray.push({
+              model: model,
+              as: associationName,
+            });
+          }
         });
 
         if (includeArray.length > 0) {

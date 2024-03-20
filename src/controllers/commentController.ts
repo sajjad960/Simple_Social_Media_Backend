@@ -5,30 +5,45 @@ import catchAsync from "../utils/catchAsync";
 import Post from "../models/postModel";
 import AppError from "../utils/AppError";
 import Commment from "../models/commentModel";
+import User from "../models/userModel";
 
 const createComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { post_id, text } = req.body;
+    const { post_id,user_id, text } = req.body;
 
     // Check If PostId Valid.
-    const isPostExist = await Post.findOne({
+    const [user, post] = await Promise.all([User.findOne({
+      where: {
+        id: user_id,
+      },
+      attributes: ['id', 'name'],
+    }), Post.findOne({
       where: {
         id: post_id,
       },
-    });
-    if (!isPostExist) {
+    })]);
+
+    if (!post) {
       return next(new AppError("Post Not Found", 404));
     }
+    if (!user) {
+      return next(new AppError("User Not Found", 404));
+    }
     // create comment
-    const comment = await Commment.create({
+    const doc = await Commment.create({
       text: text,
       post_id,
+      user_id
     });
 
     res.status(201).json({
       success: true,
       message: "Comment created successfully",
-      comment,
+      comment: {
+        ...doc.dataValues,
+        user_id: undefined,
+        userDetails: user
+      },
     });
   }
 );
@@ -41,7 +56,7 @@ const getAllComments = catchAsync(
     req.query.post_id = post_id;
     req.query.limit = "3";
     // get associate data
-    req.query.include="commentReactions"
+    req.query.include="commentReactions,userDetails"
 
     // Check If PostId Valid.
     const isPostExist = await Post.findOne({
