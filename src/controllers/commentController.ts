@@ -60,7 +60,7 @@ const getAllComments = catchAsync(
     req.query.post_id = post_id;
     req.query.limit = "3";
     // get associate data
-    req.query.include = [{ model: Counter, as: "commentReactions" }, {model: User, as: "userDetails", attributes: ['id', 'name']}];
+    req.query.include = [{ model: Counter, as: "commentReactions" }, {model: User, as: "userDetailsComment", attributes: ['id', 'name']}];
 
     // Check If PostId Valid.
     const isPostExist = await Post.findOne({

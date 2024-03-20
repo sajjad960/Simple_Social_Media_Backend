@@ -42,7 +42,7 @@ const Commment = sequelize.define(
   { timestamps: false }
 );
 
-Commment.belongsTo(User, {foreignKey: "user_id", as: "userDetails"})
-User.hasOne(Commment, {foreignKey: "user_id", as: "userDetails"})
+Commment.belongsTo(User, {foreignKey: "user_id", as: "userDetailsComment"})
+User.hasOne(Commment, {foreignKey: "user_id", as: "userDetailsComment"})
 
 export = Commment;

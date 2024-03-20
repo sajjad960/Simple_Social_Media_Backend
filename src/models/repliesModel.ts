@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../instances/sequelize";
+import User from "./userModel";
 
 const Replies = sequelize.define(
   "replies",
@@ -35,5 +36,8 @@ const Replies = sequelize.define(
   },
   { timestamps: false }
 );
+
+Replies.belongsTo(User, {foreignKey: "user_id", as: "userDetailsReplies"})
+User.hasOne(Replies, {foreignKey: "user_id", as: "userDetailsReplies"})
 
 export = Replies;

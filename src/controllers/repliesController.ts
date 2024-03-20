@@ -6,6 +6,7 @@ import Commment from "../models/commentModel";
 import AppError from "../utils/AppError";
 import factory from "./handleFactory";
 import Counter from "../models/counterModel";
+import User from "../models/userModel";
 
 const createReply = catchAsync(
   async (req: any, res: Response, next: NextFunction) => {
@@ -41,7 +42,7 @@ const getAllReplies = catchAsync(
     req.query.comment_id = comment_id;
     req.query.limit = "2"
     // get associate data
-    req.query.include=[{ model: Counter, as: "replyReactions" }]
+    req.query.include=[{ model: Counter, as: "replyReactions" }, {model: User, as: "userDetailsReplies", attributes: ['id', 'name']}]
 
     // Check If PostId Valid.
     const isPostExist = await Commment.findOne({
