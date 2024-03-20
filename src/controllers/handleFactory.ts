@@ -46,29 +46,29 @@ const getAll = (Model: any) =>
     }
 
     function relationsData() {
-      const includeArray: any[] = [];
-
+      // const includeArray: any[] = [];
+      
       if (req.query.include) {
-        const includedModels = String(req.query.include).split(",");
+        query.include = req.query.include;
+        // const includedModels = String(req.query.include).split(",");
 
-        includedModels.forEach((associationName: string) => {
-          if (associationName) {
-            const model =
-              (associationName === "postReactions" && Counter) ||
-              (associationName === "commentReactions" && Counter) ||
-              (associationName === "replyReactions" && Counter) ||
-              (associationName === "userDetails" && User);
+        // includedModels.forEach((associationName: string) => {
+        //   if (associationName) {
+        //     const model =
+        //       (associationName === "postReactions" && Counter) ||
+        //       (associationName === "commentReactions" && Counter) ||
+        //       (associationName === "replyReactions" && Counter) ||
+        //       (associationName === "userDetails" && User);
 
-            includeArray.push({
-              model: model,
-              as: associationName,
-            });
-          }
-        });
+        //     includeArray.push({
+        //       model: model,
+        //       as: associationName,
+        //     });
+        //   }
+        // });
 
-        if (includeArray.length > 0) {
-          query.include = includeArray;
-        }
+        // if (includeArray.length > 0) {
+        // }
         console.log("query", query);
       }
     }

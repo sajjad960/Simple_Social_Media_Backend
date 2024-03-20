@@ -7,6 +7,7 @@ import fs from "fs/promises";
 import { load } from "@tensorflow-models/coco-ssd";
 import { node } from "@tensorflow/tfjs-node";
 import Jimp from "jimp";
+import Counter from "../models/counterModel";
 
 // const createUser = factory.createOne(Users);
 // const getUsers = factory.getAll(Users);
@@ -146,7 +147,7 @@ const getUploadImages = catchAsync(async (req: any, res: Response) => {
 const getAllPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // get associate data
-    req.query.include="postReactions"
+    req.query.include=[{ model: Counter, as: "postReactions" }]
     req.query.limit = "9"
 
     factory.getAll(Post)(req, res, next);

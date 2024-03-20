@@ -6,22 +6,26 @@ import Post from "../models/postModel";
 import AppError from "../utils/AppError";
 import Commment from "../models/commentModel";
 import User from "../models/userModel";
+import Counter from "../models/counterModel";
 
 const createComment = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { post_id,user_id, text } = req.body;
+    const { post_id, user_id, text } = req.body;
 
     // Check If PostId Valid.
-    const [user, post] = await Promise.all([User.findOne({
-      where: {
-        id: user_id,
-      },
-      attributes: ['id', 'name'],
-    }), Post.findOne({
-      where: {
-        id: post_id,
-      },
-    })]);
+    const [user, post] = await Promise.all([
+      User.findOne({
+        where: {
+          id: user_id,
+        },
+        attributes: ["id", "name"],
+      }),
+      Post.findOne({
+        where: {
+          id: post_id,
+        },
+      }),
+    ]);
 
     if (!post) {
       return next(new AppError("Post Not Found", 404));
@@ -33,7 +37,7 @@ const createComment = catchAsync(
     const doc = await Commment.create({
       text: text,
       post_id,
-      user_id
+      user_id,
     });
 
     res.status(201).json({
@@ -42,7 +46,7 @@ const createComment = catchAsync(
       comment: {
         ...doc.dataValues,
         user_id: undefined,
-        userDetails: user
+        userDetails: user,
       },
     });
   }
@@ -56,7 +60,7 @@ const getAllComments = catchAsync(
     req.query.post_id = post_id;
     req.query.limit = "3";
     // get associate data
-    req.query.include="commentReactions,userDetails"
+    req.query.include = [{ model: Counter, as: "commentReactions" }, {model: User, as: "userDetails", attributes: ['id', 'name']}];
 
     // Check If PostId Valid.
     const isPostExist = await Post.findOne({
