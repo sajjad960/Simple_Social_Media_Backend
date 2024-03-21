@@ -46,7 +46,7 @@ const createComment = catchAsync(
       comment: {
         ...doc.dataValues,
         user_id: undefined,
-        userDetails: user,
+        userDetailsComment: user,
       },
     });
   }
