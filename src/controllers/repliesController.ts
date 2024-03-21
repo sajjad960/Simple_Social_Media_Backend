@@ -14,7 +14,29 @@ const createReply = catchAsync(
     const user_id = req.user.id;
     //create reply
     const { comment_id, text } = req.body;
-    const reply = await Replies.create(
+
+    const [user, comment] = await Promise.all([
+      User.findOne({
+        where: {
+          id: user_id,
+        },
+        attributes: ["id", "name"],
+      }),
+      Commment.findOne({
+        where: {
+          id: comment_id,
+        },
+      }),
+    ]);
+
+    if (!comment) {
+      return next(new AppError("Comment Not Found", 404));
+    }
+    if (!user) {
+      return next(new AppError("User Not Found", 404));
+    }
+
+    const doc = await Replies.create(
       {
         comment_id,
         user_id,
@@ -30,7 +52,14 @@ const createReply = catchAsync(
     });
 
     await t.commit();
-    res.status(201).json({ reply, message: "Reply created successfully." });
+    res.status(201).json({
+      reply: {
+        ...doc.dataValues,
+        user_id: undefined,
+        userDetailsReplies: user,
+      },
+      message: "Reply created successfully.",
+    });
   }
 );
 
@@ -40,9 +69,12 @@ const getAllReplies = catchAsync(
 
     // add filter
     req.query.comment_id = comment_id;
-    req.query.limit = "2"
+    req.query.limit = "2";
     // get associate data
-    req.query.include=[{ model: Counter, as: "replyReactions" }, {model: User, as: "userDetailsReplies", attributes: ['id', 'name']}]
+    req.query.include = [
+      { model: Counter, as: "replyReactions" },
+      { model: User, as: "userDetailsReplies", attributes: ["id", "name"] },
+    ];
 
     // Check If PostId Valid.
     const isPostExist = await Commment.findOne({
