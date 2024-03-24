@@ -20,7 +20,8 @@
     //add decorator support
     //"allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "skipLibCheck": true
   },
   "include": ["./src/**/*.tsx", "./src/**/*.ts", "src/models/db.js"],
   "exclude": ["node_modules"]
