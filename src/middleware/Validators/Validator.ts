@@ -4,27 +4,34 @@ import { Request } from "express";
 import { Response } from "express";
 
 const validate = (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-      return next();
-    }
-    const extractedErrors = [];
-    errors.array().map((err) => extractedErrors.push({ [err.param]: err.msg }));
-  
-    return res.status(422).json({
-      errors: extractedErrors,
-    });
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
   }
+  const extractedErrors = [];
+  errors.array().map((err) => extractedErrors.push({ [err.param]: err.msg }));
+
+  return res.status(422).json({
+    errors: extractedErrors,
+  });
+};
 
 const userValidationRules = () => {
-    return [
-      body("email")
-        .trim()
-        .isEmail()
-        .withMessage("Please enter your valid email address"),
-    ];
-  };
-  
-const Validator = {userValidationRules, validate}
+  return [
+    body("name")
+      .trim()
+      .notEmpty()
+      .isLength({ min: 2 })
+      .withMessage("Name must be at least 2 characters long"),
+    body("userName").trim().notEmpty().withMessage("Username cannot be empty"),
+    body("email")
+      .trim()
+      .isEmail()
+      .withMessage("Please enter a valid email address"),
+    body("password").trim().notEmpty().withMessage("Password cannot be empty"),
+  ];
+};
 
-export = Validator
+const Validator = { userValidationRules, validate };
+
+export = Validator;
