@@ -123,7 +123,9 @@ const createPost = catchAsync(async (req: any, res: Response) => {
     .json({ success: true, message: "Post created successfully", post });
 
   // Run Image Processing And Check If There Any Cat Available
-  images?.length > 0 && precessImages(images, post.id);
+  
+  // ✴️ Image Processing is Shut down For Mini Server Issue
+  // images?.length > 0 && precessImages(images, post.id);
 });
 
 const getUploadImages = catchAsync(async (req: any, res: Response) => {
