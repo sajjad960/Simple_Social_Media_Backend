@@ -53,7 +53,7 @@ const globalErrorHandler = (
   } else if (process.env.NODE_ENV === "production") {
     let error: any = Object.assign(err);
 
-    if(error.original.code === "ER_DUP_ENTRY") error = handleDuplicateFieldError(error)
+    if(error?.original?.code === "ER_DUP_ENTRY") error = handleDuplicateFieldError(error)
     sendErrorProd(error, res);
   }
 };
