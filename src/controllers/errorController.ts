@@ -18,10 +18,8 @@ const handleDuplicateFieldError = (err) => {
     const duplicateFields = Object.entries(fields)
     .map(([fieldName, value]) => fieldName.split("_")[0]).join(",")
     
-    // Construct a user-friendly error message
     const message = `This ${duplicateFields} already registered.`;
 
-    // Return an instance of your custom error class or simply the message
     return new AppError(message, 400)
   }
   
@@ -54,7 +52,7 @@ const globalErrorHandler = (
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
     let error: any = Object.assign(err);
-    
+
     if(error.original.code === "ER_DUP_ENTRY") error = handleDuplicateFieldError(error)
     sendErrorProd(error, res);
   }
