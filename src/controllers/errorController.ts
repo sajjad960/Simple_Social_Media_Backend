@@ -1,4 +1,6 @@
+const { UniqueConstraintError } = require('sequelize');
 import { NextFunction, Request, Response } from "express";
+import AppError from "../utils/AppError";
 
 const sendErrorDev = (err: any, res: Response) => {
   res.status(err.statusCode).json({
@@ -7,6 +9,20 @@ const sendErrorDev = (err: any, res: Response) => {
     message: err.message,
     stack: err.stack,
   });
+};
+
+const handleDuplicateFieldError = (err) => {
+  if (err instanceof UniqueConstraintError) {
+    // Extract the duplicate field name from the error message
+    const fields = err.fields;
+    const duplicateFields = Object.entries(fields)
+    .map(([fieldName, value]) => fieldName.split("_")[0]).join(",")
+    
+    const message = `This ${duplicateFields} already registered.`;
+
+    return new AppError(message, 400)
+  }
+  
 };
 
 const sendErrorProd = (err: any, res: Response) => {
@@ -37,6 +53,7 @@ const globalErrorHandler = (
   } else if (process.env.NODE_ENV === "production") {
     let error: any = Object.assign(err);
 
+    if(error.original.code === "ER_DUP_ENTRY") error = handleDuplicateFieldError(error)
     sendErrorProd(error, res);
   }
 };
